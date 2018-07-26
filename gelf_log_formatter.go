@@ -14,6 +14,14 @@ import (
 // Defines a log format type that wil output line separated JSON objects
 // in the GELF format.
 type GelfFormatter struct {
+	AppName string
+}
+
+
+func NewGelfFormatter(appName string) *GelfFormatter {
+    return  &GelfFormatter{
+        AppName: appName,
+    }
 }
 
 type fields map[string]interface{}
@@ -44,7 +52,7 @@ func (f *GelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data["level"] = entry.Level
 	data["level_name"] = entry.Level.String()
 	data["_pid"] = os.Getpid()
-	data["application"] = "roshambo"
+	data["application"] = f.AppName
 
 	serialized, err := json.Marshal(data)
 	if err != nil {
