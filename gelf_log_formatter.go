@@ -14,13 +14,13 @@ import (
 // Defines a log format type that wil output line separated JSON objects
 // in the GELF format.
 type GelfFormatter struct {
-	AppName string
+	AppName *string
 }
 
 
 func NewGelfFormatter(appName string) *GelfFormatter {
     return  &GelfFormatter{
-        AppName: appName,
+        AppName: &appName,
     }
 }
 
@@ -29,8 +29,9 @@ type fields map[string]interface{}
 // Format formats the log entry to GELF JSON
 func (f *GelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data := make(fields, len(entry.Data)+6)
-	blacklist := []string{"_id", "id", "timestamp", "version", "level", "application"}
+	blacklist := []string{"_id", "id", "timestamp", "version", "level"}
 
+	fmt.Println("AppName: ", f.AppName)
 	for k, v := range entry.Data {
 
 		if contains(k, blacklist) {
@@ -45,6 +46,8 @@ func (f *GelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 			data["_"+k] = v
 		}
 	}
+
+	fmt.Println("AppName: ", f)
 
 	data["version"] = "1.1"
 	data["message"] = entry.Message
