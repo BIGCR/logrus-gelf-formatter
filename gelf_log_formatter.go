@@ -31,7 +31,6 @@ func (f *GelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data := make(fields, len(entry.Data)+6)
 	blacklist := []string{"_id", "id", "timestamp", "version", "level"}
 
-	fmt.Println("AppName: ", f.AppName)
 	for k, v := range entry.Data {
 
 		if contains(k, blacklist) {
@@ -46,8 +45,6 @@ func (f *GelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 			data["_"+k] = v
 		}
 	}
-
-	fmt.Println("AppName: ", f)
 
 	data["version"] = "1.1"
 	data["message"] = entry.Message
